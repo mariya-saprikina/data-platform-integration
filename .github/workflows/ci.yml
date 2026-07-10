@@ -21,7 +21,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install sqlfluff
-        run: pip install sqlfluff sqlfluff-templater-dbt dbt-core
+        run: pip install sqlfluff
 
       - name: Lint dbt models
         working-directory: dbt
