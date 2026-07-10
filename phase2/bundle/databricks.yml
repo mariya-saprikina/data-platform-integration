@@ -1,0 +1,60 @@
+bundle:
+  name: data_platform
+
+# env variable controls which catalog the pipeline reads from and writes to.
+# databricks_host and token are read from DATABRICKS_HOST / DATABRICKS_TOKEN
+# environment variables automatically — never hardcode them here.
+variables:
+  env:
+    description: Target environment (dev, staging, prod)
+    default: dev
+
+targets:
+  dev:
+    mode: development
+    variables:
+      env: dev
+
+  staging:
+    variables:
+      env: staging
+
+  prod:
+    mode: production
+    variables:
+      env: prod
+
+resources:
+  jobs:
+    billing_pipeline:
+      name: "billing_pipeline_${var.env}"
+
+      # All tasks in this job share this cluster.
+      # policy_id references the job-non-prod policy created in Phase 1.
+      # Change to policy_job_prod ID when targeting prod target.
+      job_clusters:
+        - job_cluster_key: default
+          new_cluster:
+            spark_version: "17.3.x-scala2.13"
+            node_type_id: "m5.xlarge"
+            enable_elastic_disk: true
+            policy_id: "000AB09D70E45ECE"  # job-non-prod — from Phase 1 Terraform output
+
+      tasks:
+        # Task 1: ingest raw data from S3 into dev.raw Delta table
+        - task_key: ingest_raw
+          job_cluster_key: default
+          notebook_task:
+            notebook_path: ./notebooks/ingest_raw.py
+            base_parameters:
+              env: ${var.env}
+
+        # Task 2: run dbt models — only starts if ingest_raw succeeds
+        - task_key: run_dbt
+          depends_on:
+            - task_key: ingest_raw
+          job_cluster_key: default
+          notebook_task:
+            notebook_path: ./notebooks/run_dbt.py
+            base_parameters:
+              env: ${var.env}

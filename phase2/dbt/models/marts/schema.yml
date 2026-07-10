@@ -1,0 +1,28 @@
+models:
+  - name: mart_revenue
+    description: "Daily revenue summary per user"
+    columns:
+      - name: event_date
+        description: "Date of the events"
+        tests:
+          - not_null
+      - name: user_id
+        description: "User identifier"
+        tests:
+          - not_null
+      - name: total_purchases
+        description: "Total number of purchase events for the user"
+        tests:
+          - not_null
+      - name: total_refunds
+        description: "Total number of refund events for the user"
+        tests:
+          - not_null
+      # - name: daily_revenue
+      #   description: "Sum of purchase amounts for the day"
+      #   tests:
+      #     - not_null
+      - name: daily_refunds
+        description: "Sum of refund amounts for the day"
+        tests:
+          - not_null
