@@ -1,0 +1,6 @@
+[sqlfluff]
+templater = jinja
+dialect = sparksql
+
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = true
