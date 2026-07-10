@@ -119,11 +119,6 @@ resource "databricks_cluster_policy" "job_non_prod" {
       maxValue = 4
     }
 
-    "autotermination_minutes" = {
-      type  = "fixed"
-      value = 30
-    }
-
     "custom_tags.env" = {
       type  = "fixed"
       value = "non-prod"
@@ -172,12 +167,6 @@ resource "databricks_cluster_policy" "job_prod" {
       type     = "range"
       minValue = 1
       maxValue = 10
-    }
-
-    # Longer window for production jobs that may run for hours
-    "autotermination_minutes" = {
-      type  = "fixed"
-      value = 60
     }
 
     "custom_tags.env" = {
