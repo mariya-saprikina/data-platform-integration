@@ -24,12 +24,8 @@ jobs:
         run: pip install sqlfluff sqlfluff-templater-dbt dbt-core
 
       - name: Lint dbt models
-        run: |
-          sqlfluff lint dbt/models/ \
-            --dialect sparksql \
-            --templater dbt \
-            --project-dir dbt/ \
-            --profiles-dir dbt/
+        working-directory: dbt
+        run: sqlfluff lint models/
 
   # ==========================================================================
   # Job 2: Python tests
