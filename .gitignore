@@ -1,0 +1,20 @@
+# Terraform
+infra/.terraform/
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+infra/terraform.tfvars
+infra/.terraform.lock.hcl
+
+# dbt
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+dbt/profiles.yml
+
+# Databricks bundle state
+bundle/.databricks/
+
+# Python
+__pycache__/
+.venv/
+*.pyc

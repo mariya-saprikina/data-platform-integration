@@ -25,7 +25,7 @@ jobs:
 
       - name: Lint dbt models
         run: |
-          sqlfluff lint phase2/dbt/models/ \
+          sqlfluff lint dbt/models/ \
             --dialect sparksql \
             --templater dbt
 
@@ -49,8 +49,8 @@ jobs:
         run: pip install pytest
 
       - name: Run tests
-        run: pytest phase2/ -v --tb=short || true
-        # || true: no tests exist yet — remove once Phase 2 Python tests are written
+        run: pytest . -v --tb=short || true
+        # || true: no tests exist yet — remove once Python tests are written
 
   # ==========================================================================
   # Job 3: Bundle validation
@@ -74,7 +74,7 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
       - name: Validate bundle
-        working-directory: phase2/bundle
+        working-directory: bundle
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
