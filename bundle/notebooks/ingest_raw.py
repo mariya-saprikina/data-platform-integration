@@ -19,7 +19,7 @@ env = dbutils.widgets.get("env")
         .format("cloudFiles")
         .option("cloudFiles.format", "json")
         .option("cloudFiles.schemaLocation", f"dbfs:/checkpoints/{env}/raw_events/schema")
-        .load(f"s3://dp-learning-databricks-root-370442296629/raw-landing/{env}/")
+        .load(f"s3://dp-learning-raw-landing-370442296629/{env}/")
     .writeStream
         .format("delta")
         .option("checkpointLocation", f"dbfs:/checkpoints/{env}/raw_events/")
