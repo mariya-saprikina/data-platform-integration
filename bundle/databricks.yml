@@ -48,6 +48,8 @@ resources:
             num_workers: 1
             enable_elastic_disk: true
             policy_id: "000AB09D70E45ECE"  # job-non-prod — from Phase 1 Terraform output
+            aws_attributes:
+              instance_profile_arn: "arn:aws:iam::370442296629:instance-profile/dp-learning-cluster-instance-profile"
 
       tasks:
         # Task 1: ingest raw data from S3 into dev.raw Delta table
