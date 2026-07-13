@@ -1,5 +1,5 @@
 # =============================================================================
-# DEV — engineers have full read/write on raw and curated
+# DEV — engineers have full read/write on raw and dbt schemas
 # staging_wap is SP-only even in dev so the WAP pattern is testable here
 # =============================================================================
 resource "databricks_grants" "dev_catalog" {
@@ -16,8 +16,8 @@ resource "databricks_grants" "dev_catalog" {
   }
 }
 
-resource "databricks_grants" "dev_raw_curated" {
-  for_each = toset(["raw", "curated"])
+resource "databricks_grants" "dev_dbt_schemas" {
+  for_each = toset(["raw", "staging", "intermediate", "marts"])
 
   schema = "${databricks_catalog.env["dev"].name}.${each.value}"
 
@@ -48,7 +48,7 @@ resource "databricks_grants" "dev_staging_wap" {
 }
 
 # =============================================================================
-# STAGING — humans read raw and curated, SP writes; staging_wap is SP-only
+# STAGING — humans read-only on all dbt schemas, SP writes; staging_wap SP-only
 # =============================================================================
 resource "databricks_grants" "staging_catalog" {
   catalog = databricks_catalog.env["staging"].name
@@ -64,8 +64,8 @@ resource "databricks_grants" "staging_catalog" {
   }
 }
 
-resource "databricks_grants" "staging_raw_curated" {
-  for_each = toset(["raw", "curated"])
+resource "databricks_grants" "staging_dbt_schemas" {
+  for_each = toset(["raw", "staging", "intermediate", "marts"])
 
   schema = "${databricks_catalog.env["staging"].name}.${each.value}"
 
@@ -94,7 +94,7 @@ resource "databricks_grants" "staging_staging_wap" {
 }
 
 # =============================================================================
-# PROD — humans read raw and curated; only SP can write; staging_wap is SP-only
+# PROD — humans read-only; only SP can write; staging_wap is SP-only
 # =============================================================================
 resource "databricks_grants" "prod_catalog" {
   catalog = databricks_catalog.env["prod"].name
@@ -110,8 +110,8 @@ resource "databricks_grants" "prod_catalog" {
   }
 }
 
-resource "databricks_grants" "prod_raw_curated" {
-  for_each = toset(["raw", "curated"])
+resource "databricks_grants" "prod_dbt_schemas" {
+  for_each = toset(["raw", "staging", "intermediate", "marts"])
 
   schema = "${databricks_catalog.env["prod"].name}.${each.value}"
 

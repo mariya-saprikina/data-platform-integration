@@ -17,7 +17,7 @@ locals {
   # Schemas shared across all three catalogs.
   # staging_wap is intentionally excluded from analyst grants in grants.tf —
   # it is the invisible holding area used by the WAP circuit before promotion.
-  schemas = ["raw", "curated", "staging_wap"]
+  schemas = ["raw", "staging", "intermediate", "marts", "staging_wap"]
 }
 
 resource "databricks_catalog" "env" {

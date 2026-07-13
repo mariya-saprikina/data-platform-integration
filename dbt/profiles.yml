@@ -4,7 +4,7 @@ dbt_platform:
     dev:
       type: databricks
       catalog: dev
-      schema: curated
+      schema: default
       host: "{{ env_var('DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
       token: "{{ env_var('DATABRICKS_TOKEN') }}"
@@ -12,7 +12,7 @@ dbt_platform:
     staging:
       type: databricks
       catalog: staging
-      schema: curated
+      schema: default
       host: "{{ env_var('DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
       token: "{{ env_var('DATABRICKS_TOKEN') }}"
@@ -20,7 +20,7 @@ dbt_platform:
     prod:
       type: databricks
       catalog: prod
-      schema: curated
+      schema: default
       host: "{{ env_var('DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
       token: "{{ env_var('DATABRICKS_TOKEN') }}"
