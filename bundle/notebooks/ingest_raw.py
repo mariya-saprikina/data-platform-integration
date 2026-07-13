@@ -18,11 +18,11 @@ env = dbutils.widgets.get("env")
     spark.readStream
         .format("cloudFiles")
         .option("cloudFiles.format", "json")
-        .option("cloudFiles.schemaLocation", f"dbfs:/checkpoints/{env}/raw_events/schema")
+    .option("cloudFiles.schemaLocation", f"s3://dp-learning-raw-landing-370442296629/_checkpoints/{env}/raw_events/schema")
         .load(f"s3://dp-learning-raw-landing-370442296629/{env}/")
     .writeStream
         .format("delta")
-        .option("checkpointLocation", f"dbfs:/checkpoints/{env}/raw_events/")
+        .option("checkpointLocation", f"s3://dp-learning-raw-landing-370442296629/_checkpoints/{env}/raw_events/")
         .trigger(availableNow=True)
         .toTable(f"{env}.raw.events")
 )
