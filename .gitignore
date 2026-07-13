@@ -9,7 +9,6 @@ infra/.terraform.lock.hcl
 dbt/target/
 dbt/dbt_packages/
 dbt/logs/
-dbt/profiles.yml
 
 # Databricks bundle state
 bundle/.databricks/

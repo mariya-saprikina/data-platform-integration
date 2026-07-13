@@ -15,6 +15,16 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
+      - name: Push dbt secrets to Databricks
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks secrets create-scope dbt-secrets || true
+          databricks secrets put-secret dbt-secrets host --string-value "${{ secrets.DATABRICKS_HOST }}"
+          databricks secrets put-secret dbt-secrets token --string-value "${{ secrets.DATABRICKS_TOKEN }}"
+          databricks secrets put-secret dbt-secrets http-path --string-value "${{ secrets.DATABRICKS_HTTP_PATH }}"
+
       - name: Deploy bundle to dev
         working-directory: bundle
         env:
