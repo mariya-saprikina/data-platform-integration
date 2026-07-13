@@ -75,3 +75,15 @@ resources:
             base_parameters:
               env: ${var.env}
               dbt_project_path: ${workspace.file_path}/dbt
+
+        # Task 3: promote staging_wap → marts atomically via INSERT OVERWRITE.
+        # Only runs if run_dbt (dbt run + dbt test) succeeded.
+        # marts is never touched if tests fail.
+        - task_key: audit_and_promote
+          depends_on:
+            - task_key: run_dbt
+          job_cluster_key: default
+          notebook_task:
+            notebook_path: ./notebooks/audit_and_promote.py
+            base_parameters:
+              env: ${var.env}
