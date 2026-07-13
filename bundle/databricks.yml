@@ -2,12 +2,13 @@ bundle:
   name: data_platform
 
 sync:
-  include:
-    - "dbt/**"
+  paths:
+    - .
+    - ../dbt
   exclude:
-    - "dbt/target/**"
-    - "dbt/logs/**"
-    - "dbt/dbt_packages/**"
+    - "../dbt/target"
+    - "../dbt/logs"
+    - "../dbt/dbt_packages"
 
 # env variable controls which catalog the pipeline reads from and writes to.
 # databricks_host and token are read from DATABRICKS_HOST / DATABRICKS_TOKEN
