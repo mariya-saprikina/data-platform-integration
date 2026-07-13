@@ -1,3 +1,10 @@
+{{
+    config(
+        materialized='table',
+        schema=var('wap_schema', 'marts')
+    )
+}}
+
 with events as (
     select * from {{ ref('stg_events') }}
 ),
