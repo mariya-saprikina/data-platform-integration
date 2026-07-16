@@ -17,3 +17,9 @@ bundle/.databricks/
 __pycache__/
 .venv/
 *.pyc
+
+# Airflow
+airflow/.env
+airflow/logs/
+airflow/plugins/
+airflow/docker-compose.yaml
