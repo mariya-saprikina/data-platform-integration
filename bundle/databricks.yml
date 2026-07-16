@@ -35,8 +35,8 @@ targets:
 
 resources:
   jobs:
-    billing_pipeline:
-      name: "billing_pipeline_${var.env}"
+    gh_archive_pipeline:
+      name: "gh_archive_pipeline_${var.env}"
 
       # All tasks in this job share this cluster.
       # policy_id references the job-non-prod policy created in Phase 1.
