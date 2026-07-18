@@ -14,7 +14,6 @@ s3_path = f"s3://dp-learning-raw-landing-370442296629/{env}/transcripts/dt={run_
 
 # COMMAND ----------
 from pyspark.sql.functions import col
-from delta.tables import DeltaTable
 
 raw_df = spark.read.option("multiline", "true").json(s3_path)
 
@@ -31,23 +30,23 @@ if bronze_df.count() == 0:
   raise Exception(f"No transcripts found at {s3_path} — check Airflow fetch task")
 
 # COMMAND ----------
-DeltaTable.createIfNotExists(spark) \
-    .tableName(f"{env}.raw.transcripts") \
-    .addColumn("symbol",      "STRING", nullable=False) \
-    .addColumn("year",        "INT",    nullable=False) \
-    .addColumn("quarter",     "INT",    nullable=False) \
-    .addColumn("raw_date",    "STRING", nullable=False) \
-    .addColumn("raw_content", "STRING", nullable=False) \
-    .execute()
+spark.sql(f"""
+    CREATE TABLE IF NOT EXISTS `{env}`.`raw`.`transcripts` (
+        symbol      STRING NOT NULL,
+        year        INT    NOT NULL,
+        quarter     INT    NOT NULL,
+        raw_date    STRING NOT NULL,
+        raw_content STRING NOT NULL
+    ) USING DELTA
+""")
 
-# COMMAND ----------
-transcripts = DeltaTable.forName(spark, f"{env}.raw.transcripts")
+bronze_df.createOrReplaceTempView("incoming")
 
-transcripts.merge(
-    bronze_df,
-    "t.symbol = s.symbol AND t.year = s.year AND t.quarter = s.quarter",
-) \
-.whenNotMatchedInsertAll() \
-.execute()
+spark.sql(f"""
+    MERGE INTO `{env}`.`raw`.`transcripts` AS t
+    USING incoming AS s
+    ON t.symbol = s.symbol AND t.year = s.year AND t.quarter = s.quarter
+    WHEN NOT MATCHED THEN INSERT *
+""")
 
 print(f"Bronze ingest complete: {bronze_df.count()} rows from {s3_path}")
