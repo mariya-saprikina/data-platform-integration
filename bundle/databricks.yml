@@ -57,18 +57,19 @@ resources:
               DATABRICKS_HTTP_PATH: "{{secrets/dbt-secrets/http-path}}"
 
       tasks:
-        # Task 1: ingest raw data from S3 into dev.raw Delta table
-        - task_key: ingest_raw
+        # Task 1: ingest raw transcripts data from S3 into dev.raw.transcripts Delta table
+        - task_key: ingest_transcripts
           job_cluster_key: default
           notebook_task:
-            notebook_path: ./notebooks/ingest_raw.py
+            notebook_path: ./notebooks/ingest_transcripts.py
             base_parameters:
               env: ${var.env}
+              run_date: ""
 
-        # Task 2: run dbt models — only starts if ingest_raw succeeds
+        # Task 2: run dbt models — only starts if ingest_transcripts succeeds
         - task_key: run_dbt
           depends_on:
-            - task_key: ingest_raw
+            - task_key: ingest_transcripts
           job_cluster_key: default
           notebook_task:
             notebook_path: ./notebooks/run_dbt.py
