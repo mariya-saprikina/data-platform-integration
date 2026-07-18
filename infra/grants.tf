@@ -47,6 +47,19 @@ resource "databricks_grants" "dev_staging_wap" {
   depends_on = [databricks_schema.schemas]
 }
 
+resource "databricks_grants" "dev_quarantine" {
+  schema = "${databricks_catalog.env["dev"].name}.quarantine"
+
+  # SP-only — quarantine holds failed WAP runs, not for analyst access
+  # schemas do not inherit prevent_destroy from the catalog resource
+  grant {
+    principal  = data.databricks_service_principal.cicd.application_id
+    privileges = ["USE_SCHEMA", "SELECT", "MODIFY", "CREATE_TABLE"]
+  }
+
+  depends_on = [databricks_schema.schemas]
+}
+
 # =============================================================================
 # STAGING — humans read-only on all dbt schemas, SP writes; staging_wap SP-only
 # =============================================================================
@@ -130,6 +143,32 @@ resource "databricks_grants" "prod_dbt_schemas" {
 
 resource "databricks_grants" "prod_staging_wap" {
   schema = "${databricks_catalog.env["prod"].name}.staging_wap"
+
+  grant {
+    principal  = data.databricks_service_principal.cicd.application_id
+    privileges = ["USE_SCHEMA", "SELECT", "MODIFY", "CREATE_TABLE"]
+  }
+
+  depends_on = [databricks_schema.schemas]
+}
+
+# =============================================================================
+# QUARANTINE — SP-only in all envs; holds failed WAP runs, never analyst-visible
+# Note: schemas do not inherit prevent_destroy from the catalog resource
+# =============================================================================
+resource "databricks_grants" "staging_quarantine" {
+  schema = "${databricks_catalog.env["staging"].name}.quarantine"
+
+  grant {
+    principal  = data.databricks_service_principal.cicd.application_id
+    privileges = ["USE_SCHEMA", "SELECT", "MODIFY", "CREATE_TABLE"]
+  }
+
+  depends_on = [databricks_schema.schemas]
+}
+
+resource "databricks_grants" "prod_quarantine" {
+  schema = "${databricks_catalog.env["prod"].name}.quarantine"
 
   grant {
     principal  = data.databricks_service_principal.cicd.application_id
