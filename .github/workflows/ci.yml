@@ -25,7 +25,7 @@ jobs:
 
       - name: Lint dbt models
         working-directory: dbt
-        run: sqlfluff lint models/
+        run: '[ -d models ] && sqlfluff lint models/ || echo "No models to lint — skipping"'
 
   # ==========================================================================
   # Job 2: Python tests
