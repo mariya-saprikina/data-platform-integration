@@ -29,9 +29,10 @@ result = subprocess.run(
     text=True,
     env={
         **os.environ,
-        # Sources.yml uses env_var('DBT_CATALOG') to set the catalog per environment.
-        # Passed here so dbt resolves dev.raw.events vs staging.raw.events correctly.
         "DBT_CATALOG": env,
+        "DATABRICKS_HOST":      dbutils.secrets.get("dbt-secrets", "host"),
+        "DATABRICKS_TOKEN":     dbutils.secrets.get("dbt-secrets", "token"),
+        "DATABRICKS_HTTP_PATH": dbutils.secrets.get("dbt-secrets", "http-path"),
     },
 )
 
