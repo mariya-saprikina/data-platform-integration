@@ -10,9 +10,6 @@ sync:
     - "../dbt/logs"
     - "../dbt/dbt_packages"
 
-# env variable controls which catalog the pipeline reads from and writes to.
-# databricks_host and token are read from DATABRICKS_HOST / DATABRICKS_TOKEN
-# environment variables automatically — never hardcode them here.
 variables:
   env:
     description: Target environment (dev, staging, prod)
@@ -53,10 +50,20 @@ resources:
               env: ${var.env}
               run_date: ""
 
-        # Task 2: run dbt models — only starts if ingest_transcripts succeeds
-        - task_key: run_dbt
+        # Task 2: split and label utterances — only starts if ingest_transcripts succeeds
+        - task_key: split_and_label
           depends_on:
             - task_key: ingest_transcripts
+          environment_key: serverless
+          notebook_task:
+            notebook_path: ./notebooks/split_and_label.py
+            base_parameters:
+              env: ${var.env}
+
+        # Task 3: run dbt models — only starts if split_and_label succeeds
+        - task_key: run_dbt
+          depends_on:
+            - task_key: split_and_label
           environment_key: serverless
           notebook_task:
             notebook_path: ./notebooks/run_dbt.py
