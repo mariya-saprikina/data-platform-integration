@@ -1,0 +1,23 @@
+version: 2
+sources:
+  - name: raw
+    database: "{{ env_var('DBT_CATALOG', 'dev') }}"
+    schema: raw
+    tables:
+      - name: transcripts
+        columns:
+          - name: symbol
+            tests: [not_null]
+          - name: year
+            tests: [not_null]
+          - name: quarter
+            tests: [not_null]
+          - name: raw_date
+            tests: [not_null]
+          - name: raw_content
+            tests: [not_null]
+  - name: staging_notebook_output
+    database: "{{ env_var('DBT_CATALOG', 'dev') }}"
+    schema: staging
+    tables:
+      - name: stg_utterances_raw

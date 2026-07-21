@@ -13,7 +13,7 @@ if not run_date:
 s3_path = f"s3://dp-learning-raw-landing-370442296629/{env}/transcripts/dt={run_date}/"
 
 # COMMAND ----------
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, lit
 
 raw_df = spark.read.option("multiline", "true").json(s3_path)
 
@@ -23,6 +23,7 @@ bronze_df = raw_df.select(
   col("quarter").cast("int"),
   col("date").alias("raw_date"),
   col("content").alias("raw_content"),
+  lit(run_date).alias("ingest_date"),
 )
 
 # COMMAND ----------
@@ -36,7 +37,8 @@ spark.sql(f"""
         year        INT    NOT NULL,
         quarter     INT    NOT NULL,
         raw_date    STRING NOT NULL,
-        raw_content STRING NOT NULL
+        raw_content STRING NOT NULL,
+        ingest_date STRING NOT NULL
     ) USING DELTA
 """)
 
