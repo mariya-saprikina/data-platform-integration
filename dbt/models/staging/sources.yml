@@ -1,8 +1,8 @@
 version: 2
 sources:
-  - name: raw
+  - name: bronze
     database: "{{ env_var('DBT_CATALOG', 'dev') }}"
-    schema: raw
+    schema: bronze
     tables:
       - name: transcripts
         columns:
@@ -16,8 +16,8 @@ sources:
             tests: [not_null]
           - name: raw_content
             tests: [not_null]
-  - name: staging_notebook_output
+  - name: silver_notebook_output
     database: "{{ env_var('DBT_CATALOG', 'dev') }}"
-    schema: staging
+    schema: silver
     tables:
-      - name: stg_utterances_raw
+      - name: utterances

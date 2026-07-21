@@ -1,5 +1,5 @@
 # =============================================================================
-# DEV — engineers have full read/write on raw and dbt schemas
+# DEV — engineers have full read/write on medallion schemas
 # staging_wap is SP-only even in dev so the WAP pattern is testable here
 # =============================================================================
 resource "databricks_grants" "dev_catalog" {
@@ -17,7 +17,7 @@ resource "databricks_grants" "dev_catalog" {
 }
 
 resource "databricks_grants" "dev_dbt_schemas" {
-  for_each = toset(["raw", "staging", "intermediate", "marts"])
+  for_each = toset(["bronze", "silver", "gold"])
 
   schema = "${databricks_catalog.env["dev"].name}.${each.value}"
 
@@ -61,7 +61,7 @@ resource "databricks_grants" "dev_quarantine" {
 }
 
 # =============================================================================
-# STAGING — humans read-only on all dbt schemas, SP writes; staging_wap SP-only
+# STAGING — humans read-only on all medallion schemas, SP writes; staging_wap SP-only
 # =============================================================================
 resource "databricks_grants" "staging_catalog" {
   catalog = databricks_catalog.env["staging"].name
@@ -78,7 +78,7 @@ resource "databricks_grants" "staging_catalog" {
 }
 
 resource "databricks_grants" "staging_dbt_schemas" {
-  for_each = toset(["raw", "staging", "intermediate", "marts"])
+  for_each = toset(["bronze", "silver", "gold"])
 
   schema = "${databricks_catalog.env["staging"].name}.${each.value}"
 
@@ -124,7 +124,7 @@ resource "databricks_grants" "prod_catalog" {
 }
 
 resource "databricks_grants" "prod_dbt_schemas" {
-  for_each = toset(["raw", "staging", "intermediate", "marts"])
+  for_each = toset(["bronze", "silver", "gold"])
 
   schema = "${databricks_catalog.env["prod"].name}.${each.value}"
 

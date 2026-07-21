@@ -14,10 +14,10 @@ locals {
     }
   }
 
-  # Schemas shared across all three catalogs.
+  # Medallion architecture schemas.
   # staging_wap is intentionally excluded from analyst grants in grants.tf —
   # it is the invisible holding area used by the WAP circuit before promotion.
-  schemas = ["raw", "staging", "intermediate", "marts", "staging_wap", "quarantine"]
+  schemas = ["bronze", "silver", "gold", "staging_wap", "quarantine"]
 }
 
 resource "databricks_catalog" "env" {

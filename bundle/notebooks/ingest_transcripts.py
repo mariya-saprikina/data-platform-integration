@@ -32,7 +32,7 @@ if bronze_df.count() == 0:
 
 # COMMAND ----------
 spark.sql(f"""
-    CREATE TABLE IF NOT EXISTS `{env}`.`raw`.`transcripts` (
+    CREATE TABLE IF NOT EXISTS `{env}`.`bronze`.`transcripts` (
         symbol      STRING NOT NULL,
         year        INT    NOT NULL,
         quarter     INT    NOT NULL,
@@ -45,7 +45,7 @@ spark.sql(f"""
 bronze_df.createOrReplaceTempView("incoming")
 
 spark.sql(f"""
-    MERGE INTO `{env}`.`raw`.`transcripts` AS t
+    MERGE INTO `{env}`.`bronze`.`transcripts` AS t
     USING incoming AS s
     ON t.symbol = s.symbol AND t.year = s.year AND t.quarter = s.quarter
     WHEN NOT MATCHED THEN INSERT *

@@ -105,8 +105,8 @@ client = OpenAI(
 
 transcripts = spark.sql(f"""
     SELECT b.symbol, b.year, b.quarter, b.raw_date, b.raw_content
-    FROM `{env}`.`raw`.`transcripts` b
-    LEFT JOIN `{env}`.`staging`.`stg_utterances_raw` s
+    FROM `{env}`.`bronze`.`transcripts` b
+    LEFT JOIN `{env}`.`silver`.`utterances` s
         ON b.symbol = s.symbol
         AND b.year = s.year
         AND b.quarter = s.quarter
@@ -119,7 +119,7 @@ if not transcripts:
 # COMMAND ----------
 
 spark.sql(f"""
-    CREATE TABLE IF NOT EXISTS `{env}`.`staging`.`stg_utterances_raw` (
+    CREATE TABLE IF NOT EXISTS `{env}`.`silver`.`utterances` (
         symbol   STRING,
         year     INT,
         quarter  INT,
@@ -176,7 +176,7 @@ for row in transcripts:
     rows_df.write.format("delta") \
         .option("replaceWhere", f"symbol='{row.symbol}' AND year={row.year} AND quarter={row.quarter}") \
         .mode("overwrite") \
-        .saveAsTable(f"`{env}`.`staging`.`stg_utterances_raw`")
+        .saveAsTable(f"`{env}`.`silver`.`utterances`")
 
     print(f"  → {len(utterances)} utterances written")
 
