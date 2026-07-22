@@ -39,6 +39,8 @@ resources:
         - environment_key: serverless
           spec:
             environment_version: "2"
+            dependencies:
+             - openai
 
       tasks:
         # Task 1: ingest raw transcripts data from S3 into dev.raw.transcripts Delta table
