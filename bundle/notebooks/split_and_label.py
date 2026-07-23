@@ -103,21 +103,6 @@ client = OpenAI(
 
 # COMMAND ----------
 
-transcripts = spark.sql(f"""
-    SELECT b.symbol, b.year, b.quarter, b.raw_date, b.raw_content
-    FROM `{env}`.`bronze`.`transcripts` b
-    LEFT JOIN `{env}`.`silver`.`utterances` s
-        ON b.symbol = s.symbol
-        AND b.year = s.year
-        AND b.quarter = s.quarter
-    WHERE s.symbol IS NULL
-""").collect()
-
-if not transcripts:
-    raise Exception(f"No transcripts found for run_date={run_date}")
-
-# COMMAND ----------
-
 spark.sql(f"""
     CREATE TABLE IF NOT EXISTS `{env}`.`silver`.`utterances` (
         symbol   STRING,
@@ -132,6 +117,18 @@ spark.sql(f"""
     ) USING DELTA
     PARTITIONED BY (symbol, year, quarter)
 """)
+
+# COMMAND ----------
+
+transcripts = spark.sql(f"""
+    SELECT b.symbol, b.year, b.quarter, b.raw_date, b.raw_content
+    FROM `{env}`.`bronze`.`transcripts` b
+    LEFT JOIN `{env}`.`silver`.`utterances` s
+        ON b.symbol = s.symbol
+        AND b.year = s.year
+        AND b.quarter = s.quarter
+    WHERE s.symbol IS NULL
+""").collect()
 
 # COMMAND ----------
 
