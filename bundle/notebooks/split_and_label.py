@@ -93,8 +93,7 @@ def assign_sections(utterances: list, qa_boundary_seq: int) -> list:
 
 # COMMAND ----------
 
-ctx = dbutils.entry_point.getDbutils().notebook().getContext()
-workspace_url = "https://" + ctx.browserHostName().get()
+workspace_url = "https://" + spark.conf.get("spark.databricks.workspaceUrl")
 
 client = OpenAI(
     api_key=dbutils.secrets.get("dbt-secrets", "token"),
