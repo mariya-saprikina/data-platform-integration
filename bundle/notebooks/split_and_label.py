@@ -132,7 +132,6 @@ transcripts = spark.sql(f"""
 
 # COMMAND ----------
 
-# DBTITLE 1,Split, label and write utterances
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 utterance_schema = StructType([
