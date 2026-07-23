@@ -100,6 +100,7 @@ client = OpenAI(
     base_url=f"{workspace_url}/serving-endpoints",
 )
 
+
 # COMMAND ----------
 
 transcripts = spark.sql(f"""
